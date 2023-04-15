@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Trip } from '../models/trip';
@@ -25,5 +25,8 @@ export class TripsService {
   }
   public updateTrip(code: string, trip: Trip): Observable<Trip> {
     return this.http.put<Trip>(`${this.API_BASE_URL}/trips/${code}`,trip);
+  }
+  public deleteTrip(code: string): Observable<void> {
+    return this.http.delete<void>(`${this.API_BASE_URL}/trips/${code}`);
   }
 }
