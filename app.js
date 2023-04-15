@@ -1,25 +1,28 @@
-//require('dotenv').config();
+require('dotenv').config();
 
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const hbs = require('hbs');
+
 require('./app_api/models/db');
+require('./app_api/config/passport');
 
-const indexRouter = require('./app_server/routes/index');
-const usersRouter = require('./app_server/routes/users');
-const travelRouter = require('./app_server/routes/travel');
-const apiRouter = require('./app_api/routes/index');
+const hbs = require('hbs');
 
-// view engine setup
 const app = express();
 const cors = require("cors");
+const corsOptions = {
+  origin: "http://localhost:4200",
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowHeaders: ['Orgin', 'X-Requested-With', 'Content-Type', 'Accept', 'Authorization'],
+};
+
+// view engine setup
 app.set('views', path.join(__dirname, 'app_server', 'views'));
 app.set('view engine', 'hbs');
 
-// register handlebars partials (https://www.npmjs.com/package/hbs)
 hbs.registerPartials(path.join(__dirname, 'app_server', 'views/partials'));
 
 app.use(logger('dev'));
@@ -28,20 +31,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-const indexRouter =require("./app_server/routes/index");
-const apiRouter = require("./app_api/routes/index");
-const travelCtrl = require("./app_server/controllers/travel");
-
-const corsOptions = {
-  origin: "http://localhost:4200",
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowHeaders: ["Content-Type", "Authorization"],
-};
+const indexRouter = require('./app_server/routes/index');
+const apiRouter = require('./app_api/routes/index');
+const travel = require("./app_server/controllers/travel");
 
 app.get('/', indexRouter);
-//app.get("/contact", (req, res) => res.render("contact", { contactSelected: req.path == "/contact" }));
-app.use('/users', usersRouter);
-app.get('/travel', travelCtrl.travel);
+app.get("/contact", (req, res) => res.render("contact", { contactSelected: req.path == "/contact" }));
+app.get("/rooms", (req, res) => res.render("rooms", { roomsSelected: req.path == "/rooms" }));
+app.get("/meals", (req, res) => res.render("meals", { mealsSelected: req.path == "/meals" }));
+app.get("/news", (req, res) => res.render("news", { newsSelected: req.path == "/news" }));
+app.get("/about", (req, res) => res.render("about", { aboutSelected: req.path == "/about" }));
+app.get('/travel', travel);
 app.use('/api', cors(corsOptions), apiRouter);
 
 // catch 404 and forward to error handler
