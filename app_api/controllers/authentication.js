@@ -1,5 +1,5 @@
 const passport = require('passport');
-const mongoose - require('mongoose');
+const mongoose = require('mongoose');
 
 const register = async (req, res) => {
     if(!req.body.name || !req.body.email || !req.body.password) {
